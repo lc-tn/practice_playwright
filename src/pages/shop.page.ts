@@ -7,7 +7,7 @@ export class ShopPage {
     productHelper = new ProductHelper();
 
     private page: Page;
-    readonly _searchResultTitle: Locator;
+    readonly searchResultTitle: Locator;
 
     //Product
     readonly _productListLocator: Locator;
@@ -25,7 +25,7 @@ export class ShopPage {
 
     constructor(page: Page) {
         this.page = page;
-        this._searchResultTitle = page.getByRole('heading', { name: 'Search results for' })
+        this.searchResultTitle = page.getByRole('heading', { name: 'Search results for' })
 
         //Product
         this._productListLocator = page.locator("//div[contains(@class,'content-product')]");
@@ -48,6 +48,7 @@ export class ShopPage {
 
     async goto() {
         await this.page.goto(ShopPage.SHOPPAGE_URL);
+        await this.page.waitForLoadState();
     }
 
     async getProductList(): Promise<Product[]> {
@@ -68,7 +69,7 @@ export class ShopPage {
         return productList;
     }
 
-    async getProductByName(productNames: string[]): Promise<Product[]> {
+    async getProductByTitle(productNames: string[]): Promise<Product[]> {
         const productList: Product[] = [];
 
         for (const productName of productNames) {
@@ -92,36 +93,22 @@ export class ShopPage {
         return productList;
     }
 
-    async checkSearchResultTitle(keyword: string) {
-        await expect(this._searchResultTitle)
-            .toContainText(new RegExp(`SEARCH RESULTS FOR \\s*[“"]${keyword}[”"]`, "i"));
+    async getCartQuanity(): Promise<number> {
+        const quantity = await this._cartQuantityLocator.textContent() ?? "";
+        return Number(quantity);
     }
 
-    async checkSearchProductByName(keyword: string) {
-        const products = await this.getProductList();
-        products.forEach(product => {
-            expect(product.title).toMatch(new RegExp(keyword, "i"));
-        })
+    async getCartTotal(): Promise<number> {
+        const total = await this._cartTotalLocator.textContent() ?? "";
+        const parsedTotal = this.productHelper.formatPrice(total);
+        return parsedTotal;
     }
 
-    async getInitialCartQuanity(): Promise<number> {
-        const initialQuantity = await this._cartQuantityLocator.textContent() ?? "";
-        return Number(initialQuantity);
-    }
+    async clickAddToCartButton(productTitle: string) {
+        const addToCartBtn = this.page
+            .locator(`//a[normalize-space() = "${productTitle}"]/parent::h2/following-sibling::a`)
 
-    async getInitialCartTotal(): Promise<number> {
-        const initialTotal = await this._cartTotalLocator.textContent() ?? "";
-        const parsedInitialTotal = this.productHelper.formatPrice(initialTotal);
-        return parsedInitialTotal;
-    }
-
-    async addProductToCart(products: Product[]) {
-        for (const product of products) {
-            const addToCartBtn = this.page
-                .locator(`//a[normalize-space() = "${product.title}"]/parent::h2/following-sibling::a`)
-
-            await addToCartBtn.click();
-        }
+        await addToCartBtn.click();
     }
 
     async checkCartIcon(products: Product[], initialQuantity: number, initialTotal: number) {
