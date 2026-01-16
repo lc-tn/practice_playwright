@@ -7,18 +7,19 @@ export class ShopPage {
     productHelper = new ProductHelper();
 
     private page: Page;
-    private _searchResultTitle: Locator;
+    readonly _searchResultTitle: Locator;
 
     //Product
-    private _productListLocator: Locator;
-    private _productTitleLocator: Locator;
-    private _productPriceLocator: Locator;
+    readonly _productListLocator: Locator;
+    readonly _productTitleLocator: Locator;
+    readonly _productPriceLocator: Locator;
 
     //Cart
-    private _cartQuantityLocator: Locator;
-    private _cartTotalLocator: Locator;
-    private _successMessage: Locator;
-    private _cartProductsLocator: Locator;
+    readonly _cartQuantityLocator: Locator;
+    readonly _cartTotalLocator: Locator;
+    readonly _successMessage: Locator;
+    readonly _cartProductsLocator: Locator;
+    readonly _checkoutButton: Locator;
     // private _cartProductQuantityLocator: Locator;
 
 
@@ -28,7 +29,7 @@ export class ShopPage {
 
         //Product
         this._productListLocator = page.locator("//div[contains(@class,'content-product')]");
-        this._productPriceLocator = page.locator("span[@class = 'price']");
+        this._productPriceLocator = page.locator("//span[@class = 'price']");
         this._productTitleLocator = page.locator("//h2[@class = 'product-title']");
 
         //Cart
@@ -36,6 +37,7 @@ export class ShopPage {
         this._cartTotalLocator = page.locator("//div[@class = 'header-wrapper']//a//span[@class = 'woocommerce-Price-amount amount']");
         this._successMessage = page.locator("//div[@data-type ='success']");
         this._cartProductsLocator = page.locator("//div[@class = 'header-wrapper']//h4[@class = 'product-title']");
+        this._checkoutButton = page.locator("//div[@class = 'header-wrapper']//a[text() = 'Checkout']");
         // this._cartProductQuantityLocator = page.locator("//div[@class = 'header-wrapper']//span[@class = 'quantity']");
     }
 
@@ -48,44 +50,43 @@ export class ShopPage {
         await this.page.goto(ShopPage.SHOPPAGE_URL);
     }
 
-    async getProductList(productNames?: string[]): Promise<Product[]> {
+    async getProductList(): Promise<Product[]> {
         const productList: Product[] = [];
-        if (!productNames) {
-            const products = await this._productListLocator.all();
 
-            for (const product of products) {
-                const title = await product.locator(this._productTitleLocator).textContent() ?? "";
-                const price = await product.locator(this._productPriceLocator).textContent() ?? "";
+        const products = await this._productListLocator.all();
+
+        for (const product of products) {
+            const title = await product.locator(this._productTitleLocator).textContent() ?? "";
+            const price = await product.locator(this._productPriceLocator).textContent() ?? "";
+            productList.push(
+                new Product({
+                    title: title.trim(),
+                    price: this.productHelper.formatPrice(price).toString()
+                })
+            )
+        }
+        return productList;
+    }
+
+    async getProductByName(productNames: string[]): Promise<Product[]> {
+        const productList: Product[] = [];
+
+        for (const productName of productNames) {
+            const titleLocator = this.page.locator(
+                `//a[normalize-space() = "${productName}"]`
+            );
+            if (titleLocator) {
+                const priceLocator = this.page.locator(
+                    `//a[normalize-space() = "${productName}"]/parent::h2/following-sibling::span`
+                )
+                const title = await titleLocator.textContent() ?? "";
+                const price = await priceLocator.textContent() ?? "";
                 productList.push(
                     new Product({
-                        name: title.trim(),
+                        title: title.trim(),
                         price: this.productHelper.formatPrice(price).toString()
                     })
                 )
-            }
-        }
-        else {
-            try {
-                for (const productName of productNames) {
-                    const titleLocator = this.page.locator(
-                        `//a[normalize-space() = "${productName}"]`
-                    );
-                    if (titleLocator) {
-                        const priceLocator = this.page.locator(
-                            `//a[normalize-space() = "${productName}"]/parent::h2/following-sibling::span`
-                        );
-                        const title = await titleLocator.textContent() ?? "";
-                        const price = await priceLocator.textContent() ?? "";
-                        productList.push(
-                            new Product({
-                                name: title.trim(),
-                                price: this.productHelper.formatPrice(price).toString()
-                            })
-                        )
-                    }
-                }
-            } catch (error) {
-                console.log(error);
             }
         }
         return productList;
@@ -140,5 +141,10 @@ export class ShopPage {
     async checkProductAddedToCart(products: Product[]) {
         const expectedProducts = products.map(product => product.title);
         await expect(this._cartProductsLocator).toHaveText(expectedProducts);
+    }
+
+    async clickCheckoutButton() {
+        await this._cartQuantityLocator.hover();
+        await this._checkoutButton.click();
     }
 }

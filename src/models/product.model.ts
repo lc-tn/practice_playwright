@@ -1,12 +1,10 @@
 export class Product{
-    private _title: string;
-    private _category: string;
-    private _price: string;
+    private _title: string = "";
+    private _category: string = "";
+    private _price: string = "";
 
-    constructor(object?: any){
-        this._title = object.name ?? "";
-        this._category = object.category ?? "";
-        this._price = object.price ?? "";
+    constructor(init?: Partial<Product>) {
+        Object.assign(this, init);
     }
 
     public set title(value: string){
@@ -19,5 +17,9 @@ export class Product{
 
     public get price(){
         return this._price;
+    }
+
+    public set price(value: string){
+        this._price = value;
     }
 }

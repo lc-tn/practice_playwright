@@ -4,29 +4,29 @@ export class HomePage {
     private page: Page;
 
     //Notification locator
-    private _notiPopupLocator: Locator;
-    private _notiCloseButtonLocator: Locator;
+    readonly _notiPopupLocator: Locator;
+    readonly _notiCloseButtonLocator: Locator;
 
     //Cookie locator
-    private _cookieNotice: Locator;
-    private _cookieOkButton: Locator;
+    readonly _cookieNotice: Locator;
+    readonly _cookieOkButton: Locator;
 
     //Header section locator
-    private _phoneNumberTextLocator: Locator;
-    private _addrsesTextLocator: Locator;
-    private _loginSignupLinkLocator: Locator;
-    private _socialMediaLinkLocator: Locator;
-    private _mainNavigationLinkLocator: Locator;
+    readonly _phoneNumberTextLocator: Locator;
+    readonly _addrsesTextLocator: Locator;
+    readonly _loginSignupLinkLocator: Locator;
+    readonly _socialMediaLinkLocator: Locator;
+    readonly _mainNavigationLinkLocator: Locator;
 
     //Search locator
-    private _searchBarDropdown: Locator;
-    private _categoryDropdown: Locator;
-    private _searchButton: Locator;
+    readonly _searchBarDropdown: Locator;
+    readonly _categoryDropdown: Locator;
+    readonly _searchButton: Locator;
 
     //Department locator
-    private _categoryDropdownLocator: Locator;
-    private _mainCategoryLocator: Locator;
-
+    readonly _categoryDropdownLocator: Locator;
+    readonly _mainCategoryLocator: Locator;
+    
     constructor(page: Page) {
         this.page = page;
 

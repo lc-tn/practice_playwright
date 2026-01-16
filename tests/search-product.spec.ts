@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { HomePage } from '../src/pages/home.page';
 import { ShopPage } from '../src/pages/shop.page';
 
-test.skip('TC_02.Verify Product Search Functionality Works', async ({ page }) => {
+test('TC_02.Verify Product Search Functionality Works', async ({ page }) => {
 
     let keyword = "camera";
     let category = "All categories";

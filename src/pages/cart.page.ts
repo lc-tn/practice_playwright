@@ -7,12 +7,12 @@ export class CartPage{
     productHelper = new ProductHelper();
     private page: Page;
 
-    private _quantityInputLocator: Locator;
-    private _plusButtonLocator: Locator;
-    private _productListLocator: Locator;
-    private _updateCartButtonLocator: Locator;
-    private _successMessageLocator: Locator;
-    private _cartTotalLocator: Locator;
+    readonly _quantityInputLocator: Locator;
+    readonly _plusButtonLocator: Locator;
+    readonly _productListLocator: Locator;
+    readonly _updateCartButtonLocator: Locator;
+    readonly _successMessageLocator: Locator;
+    readonly _cartTotalLocator: Locator;
 
     constructor(page: Page){
         this.page = page;
@@ -29,12 +29,12 @@ export class CartPage{
     }
 
     async increaseProductQuantity(){
-        await this._plusButtonLocator.nth(0).click();
+        await this._quantityInputLocator.nth(0).fill("2");
         await this._updateCartButtonLocator.click();
     }
 
     async checkCartUpdate(product: Product){
-        await expect.soft(this._quantityInputLocator.nth(0)).toHaveText("2");
+        await expect.soft(this._quantityInputLocator.nth(0)).toHaveValue("2");
         await expect.soft(this._successMessageLocator).toBeVisible();
         const expectedTotal = Number(product.price) * 2;
         await expect.soft(this._cartTotalLocator).toContainText(expectedTotal.toString());
