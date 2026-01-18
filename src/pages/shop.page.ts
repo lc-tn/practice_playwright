@@ -19,7 +19,6 @@ export class ShopPage extends HomePage {
     
     readonly cartProductsLocator: Locator;
     readonly checkoutButton: Locator;
-    // private _cartProductQuantityLocator: Locator;
 
 
     constructor(page: Page) {
@@ -37,60 +36,12 @@ export class ShopPage extends HomePage {
         
         this.cartProductsLocator = page.locator("//div[@class = 'header-wrapper']//h4[@class = 'product-title']");
         this.checkoutButton = page.locator("//div[@class = 'header-wrapper']//a[text() = 'Checkout']");
-        // this._cartProductQuantityLocator = page.locator("//div[@class = 'header-wrapper']//span[@class = 'quantity']");
     }
-
-    // private set productLocator(value: string) {
-    //     this._productLocator = this.page
-    //         .locator(`//a[normalize-space()='${value}']/ancestor::div[contains@class,'content-product')]`);
-    // }
 
     async goto() {
         await this.page.goto(ShopPage.SHOPPAGE_URL);
         await this.page.waitForLoadState();
     }
-
-    // async getProductList(): Promise<Product[]> {
-    //     const productList: Product[] = [];
-
-    //     const products = await this._productListLocator.all();
-
-    //     for (const product of products) {
-    //         const title = await product.locator(this._productTitleLocator).textContent() ?? "";
-    //         const price = await product.locator(this._productPriceLocator).textContent() ?? "";
-    //         productList.push(
-    //             new Product({
-    //                 title: title.trim(),
-    //                 price: this.productHelper.formatPrice(price).toString()
-    //             })
-    //         )
-    //     }
-    //     return productList;
-    // }
-
-    // async getProductByTitle(productNames: string[]): Promise<Product[]> {
-    //     const productList: Product[] = [];
-
-    //     for (const productName of productNames) {
-    //         const titleLocator = this.page.locator(
-    //             `//h1[normalize-space() = "${productName}"]`
-    //         );
-    //         if (titleLocator) {
-    //             const priceLocator = this.page.locator(
-    //                 `//h1[normalize-space() = "${productName}"]/following-sibling::p[@class = 'price']`
-    //             )
-    //             const title = await titleLocator.textContent() ?? "";
-    //             const price = await priceLocator.textContent() ?? "";
-    //             productList.push(
-    //                 new Product({
-    //                     title: title.trim(),
-    //                     price: this.productHelper.formatPrice(price).toString()
-    //                 })
-    //             )
-    //         }
-    //     }
-    //     return productList;
-    // }
 
     async getCartQuanity(): Promise<number> {
         const quantity = await this.cartQuantityLocator.textContent() ?? "";
@@ -119,11 +70,6 @@ export class ShopPage extends HomePage {
         await expect.soft(this.cartQuantityLocator).toHaveText(initialQuantity.toString());
         await expect.soft(this.cartTotalLocator).toContainText(initialTotal.toString());
     }
-
-    // async checkProductAddedToCart(products: Product[]) {
-    //     const expectedProducts = products.map(product => product.title);
-    //     await expect(this._cartProductsLocator).toHaveText(expectedProducts);
-    // }
 
     async clickCheckoutButton() {
         await this.cartQuantityLocator.hover();
