@@ -39,6 +39,7 @@ type TestFixtures = {
 
 export const test = base.extend<TestFixtures>({
     homePage: async ({ page }, use) => {
+        test.setTimeout(120000);
         const homePage = new HomePage(page);
         await use(homePage);
     },

@@ -43,8 +43,6 @@ test.describe('Testcases involving CheckoutPage', () => {
         checkoutPage,
     }) => {
 
-        test.setTimeout(120000);
-
         let productTitles = ['AirPods'];
 
         const billingDetail = new BillingDetail({

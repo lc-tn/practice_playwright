@@ -12,8 +12,6 @@ test.describe('Testcases to check navigation of main menu categories', () => {
         homePageVerification
     }) => {
 
-        test.setTimeout(120000);
-
         let mainCategories = [
             'Automobiles & Motorcycles',
             'Car Electronics',

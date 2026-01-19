@@ -12,7 +12,7 @@ test.describe('Testcases involving Registering account', () => {
         myAccountPage,
         mailPage
     }) => {
-        test.setTimeout(120000);
+
         const email = generateUniqueEmail('test', 'grr.la');
         const username = email.split('@')[0];
         const password = '12345678';

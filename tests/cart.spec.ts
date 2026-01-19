@@ -5,7 +5,7 @@ test.describe('Testcases for CartPage', () => {
         await homePage.goto();
     });
 
-    test.skip('TC_05.Verify Product Quantity Can Be Updated in Cart', async ({
+    test('TC_05.Verify Product Quantity Can Be Updated in Cart', async ({
         shopPageBusiness,
         productPage,
         cartPage,
